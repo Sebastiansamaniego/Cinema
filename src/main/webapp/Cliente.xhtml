@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body id="body">
+        <h:form>
+            <p:menubar>
+                <p:submenu label="MOVIE TIME" icon="pi pi-file">
+                    <p:submenu label="Cine" icon="pi pi-briefcase">
+                        <p:menuitem value="Nuevo cliente"  outcome="/Cliente"/>
+                        <p:menuitem value="Entradas"  outcome="/Entrada"/>
+                    </p:submenu>
+                </p:submenu>
+            </p:menubar>
+        </h:form>
+        <p:growl id="msj" showDetail="true" >
+            <p:autoUpdate/>
+        </p:growl> 
+        <h:form id="frmdatos">
+            <h:panelGrid columns="2" style="margin: 0 auto;">
+                <p:outputLabel value="Nombre"/>
+                <p:inputText placeholder="Escribe aquí" onkeyup="javascript:this.value = this.value.toUpperCase();" value="#{clienteC.model.NOMCLI}"/>
+                <p:outputLabel value="Apellido"/>
+                <p:inputText placeholder="Escribe aquí" onkeyup="javascript:this.value = this.value.toUpperCase();" value="#{clienteC.model.APECLI}"/>
+                <p:outputLabel value="Edad"/>
+                <p:spinner placeholder="Escribe aquí" value="#{clienteC.model.EDAD}" min="1"/>
+                <p:outputLabel/>
+                <p:commandButton id="btnregistrat" update="frmcli :frmdatos" value="Registrar" style="width: 230px" actionListener="#{clienteC.registrar()}"/>
+                <p:blockUI  block="body" trigger="btnregistrat">
+                    Cargando ...
+                </p:blockUI>
+            </h:panelGrid>
+        </h:form>
+
+        <h:form id="frmcli">
+            <p:dataTable var="cli" id="tablacli" value="#{clienteC.lista}"
+                         rows="5" paginator="true" 
+                         widgetVar="busquedaPersona" emptyMessage="No se encontro registro"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                         rowsPerPageTemplate="5,10,15,20">
+                <f:facet name="header">
+                    <h:outputText value="CLIENTES"></h:outputText>
+                </f:facet>
+                <p:column headerText="NOMBRES">
+                    <h:outputText value="#{cli.NOMCLI}" style="text-transform: capitalize"/>
+                </p:column>
+                <p:column headerText="APELLIDOS">
+                    <h:outputText value="#{cli.APECLI}" style="text-transform: capitalize"/>
+                </p:column>
+                <p:column headerText="EDAD">
+                    <h:outputText value="#{cli.EDAD}" style="text-transform: capitalize"/>
+                </p:column>
+                <p:column headerText="MODIFICAR" style="width: 80px" exportable="false">
+                    <p:commandButton icon="fa fa-fw fa-pencil-square-o"
+                                     oncomplete="PF('wdlgDatos').show();"
+                                     title="modificar"
+                                     update=":frmModificar">
+                        <f:setPropertyActionListener value="#{cli}" target="#{clienteC.modelodlg}"/>
+                    </p:commandButton>
+                </p:column>
+                <p:spacer width="20" height="20" />
+                <p:column headerText="ELIMINAR" style="width: 70px" exportable="false">
+                    <p:commandButton icon="fa fa-fw fa-trash" 
+                                     title="eliminar" 
+                                     actionListener="#{clienteC.eliminar(cli)}" 
+                                     update="frmcli" >
+                        <p:confirm header="Confirmación" message="¿Desea eliminar?" icon="fa fa-fw fa-exclamation-circle"/>
+                        <p:tooltip trackMouse="true"/>
+                    </p:commandButton>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                    </p:confirmDialog>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <p:dialog header="EDTAR CLIENTE"  widgetVar="wdlgDatos" id="dlgDatos" modal="true" >
+            <h:form id="frmModificar">
+                <h:panelGrid columns="2" style="margin: 0 auto;">
+                    <p:outputLabel value="Nombre"/>
+                    <p:inputText placeholder="Escribe aquí" onkeyup="javascript:this.value = this.value.toUpperCase();" value="#{clienteC.modelodlg.NOMCLI}"/>
+                    <p:outputLabel value="Apellido"/>
+                    <p:inputText placeholder="Escribe aquí" onkeyup="javascript:this.value = this.value.toUpperCase();" value="#{clienteC.modelodlg.APECLI}"/>
+                    <p:outputLabel value="Edad"/>
+                    <p:spinner placeholder="Escribe aquí" value="#{clienteC.modelodlg.EDAD}" min="1"/>
+                    <p:outputLabel/>
+                </h:panelGrid>
+                <p:commandButton id="btnModificar" value="Modificar" actionListener="#{clienteC.modificar()}"
+                                 update="frmModificar :frmcli" 
+                                 oncomplete="if(!args.validationFailed)PF('wdlgDatos').hide();">
+                    <p:confirm header="Confirmación" message="¿Deseas Modificar?" icon="ui-icon-alert"/>
+                </p:commandButton>
+                <p:spacer width="20" height="20" />
+                <p:blockUI  block="body" trigger="btnModificar">
+                    Cargando ...
+                </p:blockUI>
+                <p:commandButton title="cancelar" value="Cancelar" immediate="true" oncomplete="PF('wdlgDatos').hide();" />
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                </p:confirmDialog>
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>
+

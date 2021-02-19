@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <p:menubar>
+            <p:submenu label="MOVIE TIME" icon="pi pi-file">
+                <p:submenu label="Cine" icon="pi pi-briefcase">
+                    <p:menuitem value="Nuevo cliente"  outcome="/Cliente"/>
+                    <p:menuitem value="Entradas"  outcome="/Entrada"/>
+                </p:submenu>
+            </p:submenu>
+        </p:menubar>
+        <h:form>
+            <p:panelGrid columns="2" style="margin: 0 auto;">
+                <p:outputLabel value="Cliente" for="cli"/>
+                <p:selectOneMenu  id="cli" value="#{detalleVentaC.modelo.cliente.IDCLI}" style="width: 360px" 
+                                  filter="true" filterMatchMode="contains" required="true" 
+                                  requiredMessage="Falta Estado Civil" >
+                    <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}" />
+                    <f:selectItems value="#{clienteC.lista}" var="cliente"
+                                   itemValue="#{cliente.IDCLI}" 
+                                   itemLabel="#{cliente.NOMCLI} #{cliente.APECLI}"/>
+                </p:selectOneMenu>
+                <p:outputLabel value="Entradas"/>
+                <p:spinner placeholder="Escribe aquí" value="#{detalleVentaC.modelo.ENTDETVEN}" min="1"/>
+                <p:outputLabel value="Película"/>
+                <p:selectOneMenu style="width: 400px;" value="#{detalleVentaC.modelo.PELDETVEN}" 
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}" />
+                    <f:selectItem itemValue="1" itemLabel="VIAJE AL FUTURO" />
+                    <f:selectItem itemValue="2" itemLabel="INFINITY WARS" />
+                    <f:selectItem itemValue="3" itemLabel="CHUCKY" />
+                    <f:selectItem itemValue="4" itemLabel="EL BUENO EL FEO Y EL MALO" />
+                    <f:selectItem itemValue="5" itemLabel="PIE PEQUEÑO" />
+                    <f:selectItem itemValue="6" itemLabel="RAMBO" />
+                </p:selectOneMenu>
+
+                <p:outputLabel value="Horario"/>
+                <p:selectOneMenu style="width: 400px;" value="#{detalleVentaC.modelo.HORDETVEN}" 
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}" />
+                    <f:selectItem itemValue="1" itemLabel="LUNES" />
+                    <f:selectItem itemValue="2" itemLabel="MARTES" />
+                    <f:selectItem itemValue="3" itemLabel="MIERCOLES" />
+                    <f:selectItem itemValue="4" itemLabel="JUEVES" />
+                    <f:selectItem itemValue="5" itemLabel="VIERNES" />
+                    <f:selectItem itemValue="6" itemLabel="SABADO" />
+                    <f:selectItem itemValue="7" itemLabel="DOMINGO" />
+                    <f:selectItem itemValue="8" itemLabel="FERIADO" />
+                    <p:ajax event="itemSelect" update="precio" listener="#{detalleVentaC.calcular()}"/>
+                </p:selectOneMenu>
+                
+                <p:outputLabel value="Horario"/>
+                <p:selectOneMenu style="width: 400px;" value="#{detalleVentaC.modelo.EDAD}" 
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}" />
+                    <f:selectItem itemValue="1" itemLabel="NIÑO MAYOR DE 3" />
+                    <f:selectItem itemValue="2" itemLabel="NIÑOS,JOVENES,ADULTOS" />
+                    <f:selectItem itemValue="3" itemLabel="PRECIO ÚNICO" />
+                    <p:ajax event="itemSelect" update="precio" listener="#{detalleVentaC.calcular()}"/>
+                </p:selectOneMenu>
+                <p:outputLabel value="Combo"/>
+                <p:selectOneMenu style="width: 400px;" value="#{detalleVentaC.modelo.COMDETVEN}" 
+                                 filter="true" filterMatchMode="contains">
+                    <f:selectItem noSelectionOption="true" itemLabel="Seleccione" itemValue="#{null}" />
+                    <f:selectItem itemValue="1" itemLabel="FAMILIAR" />
+                    <f:selectItem itemValue="2" itemLabel="CON LA PAREJA" />
+                    <f:selectItem itemValue="3" itemLabel="CON LA PAREJA 2" />
+                    <f:selectItem itemValue="4" itemLabel="CON AMIGOS" />
+                    <f:selectItem itemValue="5" itemLabel="CON LOS AMIGOS 2" />
+                    <f:selectItem itemValue="6" itemLabel="INDIVIDUAL" />
+                    <f:selectItem itemValue="7" itemLabel="NINGUNO" />
+                    <p:ajax event="itemSelect" update="precio" listener="#{detalleVentaC.calcular()}"/>
+                </p:selectOneMenu>
+                <p:outputLabel value="Precio"/>
+                <h:outputText id="precio" value="#{detalleVentaC.modelo.PREDETVEN}"/>
+                
+            </p:panelGrid>
+        </h:form>
+    </h:body>
+</html>
+
